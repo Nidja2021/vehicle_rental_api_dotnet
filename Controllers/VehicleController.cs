@@ -54,7 +54,7 @@ namespace VehicleRental.API.Controllers
             }
         }
 
-        [HttpGet("/{id}")]
+        [HttpDelete("/{id}")]
         public async Task<ActionResult<string>> DeleteVehicle(Guid id) {
             try
             {

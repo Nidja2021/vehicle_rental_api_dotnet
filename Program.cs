@@ -15,6 +15,7 @@ builder.Services.AddDbContext<DataContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection"));
 });
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddTransient<IVehicleService, VehicleService>();
 
 builder.Services.AddControllers();
