@@ -13,5 +13,6 @@ namespace VehicleRental.API.Models
         public int Year { get; set; }
         public string? FuelType { get; set; }
         public decimal RentalRate { get; set; }
+        public bool Availability { get; set; } = true;
     }
 }
