@@ -29,36 +29,32 @@ namespace VehicleRental.API.Controllers
                 return BadRequest(ModelState);
             }
             var vehicleId = await _vehicleService.AddVehicle(vehicleRequest);
-            return CreatedAtAction(nameof(GetVehicle), new { id = vehicleId }, vehicleRequest);
+            return StatusCode(201, vehicleId);
         }
 
         [HttpGet("/{id}")]
         public async Task<ActionResult<VehicleDto>> GetVehicle(Guid id) {
-            try
-            {
-                return Ok(await _vehicleService.GetVehicle(id));
-            } catch(Exception e)
-            {
-                return BadRequest(new { Message = e.Message });
-            }
+            var vehicle = await _vehicleService.GetVehicle(id);
+            if (vehicle == null) return NotFound(new { Message = "Vehicle does not exists" });
+            
+            return Ok(vehicle);
         }
 
         [HttpPatch("/{id}")]
         public async Task<ActionResult<VehicleDto>> UpdateVehicle(Guid id, [FromBody] VehicleDto vehicleRequest) {
-            try
-            {
-                return Ok(await _vehicleService.UpdateVehicle(id, vehicleRequest));
-            } catch(Exception e)
-            {
-                return BadRequest(new { Message = e.Message });
-            }
+            var vehicle = await _vehicleService.GetVehicle(id);
+            if (vehicle == null) return NotFound(new { Message = "Vehicle does not exists" });
+            
+            await _vehicleService.UpdateVehicle(id, vehicleRequest);
+            return NoContent();
         }
 
         [HttpDelete("/{id}")]
         public async Task<ActionResult<string>> DeleteVehicle(Guid id) {
             try
             {
-                return Ok(await _vehicleService.DeleteVehicle(id));
+                await _vehicleService.DeleteVehicle(id);
+                return NoContent();
             } catch(Exception e)
             {
                 return BadRequest(new { Message = e.Message });
