@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace VehicleRental.API.Controllers
 {
     [ApiController]
-    [Route("api/vehicles")]
+    [Route("api/vehicles/")]
     public class VehicleController : ControllerBase
     {
         private readonly IVehicleService _vehicleService;
@@ -32,7 +32,7 @@ namespace VehicleRental.API.Controllers
             return StatusCode(201, vehicleId);
         }
 
-        [HttpGet("/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<VehicleDto>> GetVehicle(Guid id) {
             var vehicle = await _vehicleService.GetVehicle(id);
             if (vehicle == null) return NotFound(new { Message = "Vehicle does not exists" });
@@ -40,7 +40,7 @@ namespace VehicleRental.API.Controllers
             return Ok(vehicle);
         }
 
-        [HttpPatch("/{id}")]
+        [HttpPatch("{id}")]
         public async Task<ActionResult<VehicleDto>> UpdateVehicle(Guid id, [FromBody] VehicleDto vehicleRequest) {
             var vehicle = await _vehicleService.GetVehicle(id);
             if (vehicle == null) return NotFound(new { Message = "Vehicle does not exists" });
@@ -49,7 +49,7 @@ namespace VehicleRental.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("/{id}")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<string>> DeleteVehicle(Guid id) {
             try
             {

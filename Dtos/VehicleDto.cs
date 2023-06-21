@@ -1,5 +1,4 @@
 
-
 namespace VehicleRental.API.Dtos
 {
     public record VehicleDto (

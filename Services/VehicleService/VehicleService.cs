@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace VehicleRental.API.Services
+namespace VehicleRental.API.Services.VehicleService
 {
     public class VehicleService : IVehicleService
     {

@@ -1,4 +1,4 @@
-namespace VehicleRental.API.Services
+namespace VehicleRental.API.Services.VehicleService
 {
     public interface IVehicleService
     {

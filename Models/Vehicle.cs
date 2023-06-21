@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace VehicleRental.API.Models
 {
@@ -12,7 +8,7 @@ namespace VehicleRental.API.Models
         public string? Model { get; set; }
         public int Year { get; set; }
         public string? FuelType { get; set; }
-        public decimal RentalRate { get; set; }
+        public decimal RentalRate { get; set; } = 0.0m;
         public bool Availability { get; set; } = true;
     }
 }
