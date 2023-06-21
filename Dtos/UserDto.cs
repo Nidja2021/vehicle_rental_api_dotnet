@@ -10,4 +10,11 @@ namespace VehicleRental.API.Dtos
         [Required] string? Email,
         [Required] string? Password
     );
+
+    public record UserProfileDto(
+        Guid Id,
+        string Username,
+        string Email,
+        string FullName
+    );
 }

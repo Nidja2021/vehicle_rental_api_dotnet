@@ -12,5 +12,6 @@ namespace VehicleRental.API.Models
         [Required] public string? Email { get; set; }
         [Required] public string? Password { get; set; }
         public string? FullName { get; set; } = "";
+        public RoleEnum Role { get; set; } = RoleEnum.USER;
     }
 }

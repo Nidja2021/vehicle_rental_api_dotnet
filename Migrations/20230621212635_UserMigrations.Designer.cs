@@ -12,7 +12,7 @@ using VehicleRental.API.Data;
 namespace VehicleRental.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230621193410_UserMigrations")]
+    [Migration("20230621212635_UserMigrations")]
     partial class UserMigrations
     {
         /// <inheritdoc />
@@ -41,6 +41,9 @@ namespace VehicleRental.API.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Username")
                         .IsRequired()

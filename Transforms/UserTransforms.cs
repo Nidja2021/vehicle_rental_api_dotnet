@@ -22,6 +22,38 @@ namespace VehicleRental.API.Transforms
                     dest => dest.FullName,
                     opt => opt.MapFrom(src => src.FullName)
                 );
+
+            CreateMap<User, UserProfileDto>()
+                .ForMember(
+                    dest => dest.Id,
+                    opt => opt.MapFrom(src => src.Id)
+                )
+                .ForMember(
+                    dest => dest.Username,
+                    opt => opt.MapFrom(src => src.Username)
+                )
+                .ForMember(
+                    dest => dest.Email,
+                    opt => opt.MapFrom(src => src.Email)
+                )
+                .ForMember(
+                    dest => dest.FullName,
+                    opt => opt.MapFrom(src => src.FullName)
+                );
+
+            CreateMap<UserProfileDto, User>()
+                .ForMember(
+                    dest => dest.Username,
+                    opt => opt.MapFrom(src => src.Username)
+                )
+                .ForMember(
+                    dest => dest.Email,
+                    opt => opt.MapFrom(src => src.Email)
+                )
+                .ForMember(
+                    dest => dest.FullName,
+                    opt => opt.MapFrom(src => src.FullName)
+                );
         }
     }
 }
