@@ -12,8 +12,8 @@ using VehicleRental.API.Data;
 namespace VehicleRental.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230621212635_UserMigrations")]
-    partial class UserMigrations
+    [Migration("20230622225602_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,44 @@ namespace VehicleRental.API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("VehicleRental.API.Models.Reservation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("EndReservation")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("StartReservation")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("VehicleId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.HasIndex("VehicleId")
+                        .IsUnique();
+
+                    b.ToTable("Reservations");
+                });
 
             modelBuilder.Entity("VehicleRental.API.Models.User", b =>
                 {
@@ -81,6 +119,35 @@ namespace VehicleRental.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Vehicles");
+                });
+
+            modelBuilder.Entity("VehicleRental.API.Models.Reservation", b =>
+                {
+                    b.HasOne("VehicleRental.API.Models.User", "User")
+                        .WithOne("Reservation")
+                        .HasForeignKey("VehicleRental.API.Models.Reservation", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VehicleRental.API.Models.Vehicle", "Vehicle")
+                        .WithOne("Reservation")
+                        .HasForeignKey("VehicleRental.API.Models.Reservation", "VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("Vehicle");
+                });
+
+            modelBuilder.Entity("VehicleRental.API.Models.User", b =>
+                {
+                    b.Navigation("Reservation");
+                });
+
+            modelBuilder.Entity("VehicleRental.API.Models.Vehicle", b =>
+                {
+                    b.Navigation("Reservation");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace VehicleRental.API.Models
 {
     public class User
@@ -13,5 +8,6 @@ namespace VehicleRental.API.Models
         [Required] public string? Password { get; set; }
         public string? FullName { get; set; } = "";
         public RoleEnum Role { get; set; } = RoleEnum.USER;
+        public List<Reservation?> Reservations { get; set; } = new List<Reservation?>();
     }
 }

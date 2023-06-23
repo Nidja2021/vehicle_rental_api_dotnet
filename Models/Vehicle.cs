@@ -1,4 +1,3 @@
-
 namespace VehicleRental.API.Models
 {
     public class Vehicle
@@ -10,5 +9,7 @@ namespace VehicleRental.API.Models
         public string? FuelType { get; set; }
         public decimal RentalRate { get; set; } = 0.0m;
         public bool Availability { get; set; } = true;
+
+        public Reservation? Reservation { get; set; }
     }
 }

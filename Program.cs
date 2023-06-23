@@ -3,7 +3,9 @@ global using VehicleRental.API.Models;
 global using VehicleRental.API.Services.AuthService;
 global using VehicleRental.API.Services.UserService;
 global using VehicleRental.API.Services.VehicleService;
+global using VehicleRental.API.Services.ReservationService;
 global using VehicleRental.API.Data;
+global using VehicleRental.API.Helpers;
 global using Microsoft.EntityFrameworkCore;
 global using AutoMapper;
 global using System.Text.Json.Serialization;
@@ -29,6 +31,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IVehicleService, VehicleService>();
+builder.Services.AddTransient<IReservationService, ReservationService>();
 
 builder.Services.AddAuthentication(options =>
 {
