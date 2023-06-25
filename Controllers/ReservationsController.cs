@@ -19,17 +19,24 @@ namespace VehicleRental.API.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<List<ReservationDto>>> GetReservations()
+        {
+            return Ok(await _reservationService.GetReservations());
+        }
+
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<Reservation>> AddReservation(Reservation reservationRequest)
+        public async Task<ActionResult<ReservationDto>> AddReservation(Reservation reservationRequest)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) return BadRequest("Token is expired");
+            if (userId == null) return Unauthorized();
  
             try
             {
-                var reservation = await _reservationService.AddReservation(userId, reservationRequest);
-                return StatusCode(201, reservation);
+                var reservation = await _reservationService.AddReservation(Guid.Parse(userId), reservationRequest);
+                // return StatusCode(201, reservation);
+                return CreatedAtAction(nameof(GetReserveration), new { id = reservation.Id}, reservation);
             }
             catch (Exception e)
             {
@@ -39,15 +46,14 @@ namespace VehicleRental.API.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult<Reservation>> GetReserveration(Guid id)
+        public async Task<ActionResult<ReservationDto>> GetReserveration(Guid id)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) return BadRequest("Token is expired");
+            if (userId == null) return Unauthorized();
 
             try
             {
-                var user = await GetCurrentUser(userId);
-                var reservation = await _reservationService.GetReservation(id, user);
+                var reservation = await _reservationService.GetReservation(id, Guid.Parse(userId));
                 return Ok(reservation);
             }
             catch (Exception e)
@@ -61,26 +67,17 @@ namespace VehicleRental.API.Controllers
         public async Task<ActionResult<Reservation>> DeleteReserveration(Guid id)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) return BadRequest("Token is expired");
+            if (userId == null) return Unauthorized();
 
             try
             {
-                var user = await GetCurrentUser(userId);
-                await _reservationService.DeleteReservation(id, user);
+                await _reservationService.DeleteReservation(id, Guid.Parse(userId));
                 return NoContent();
             }
             catch (Exception e)
             {
                 return BadRequest(new { Message = e.Message });
             }
-        }
-
-        private async Task<User> GetCurrentUser(string userId)
-        {
-            var user = await _context.Users.FindAsync(Guid.Parse(userId));
-            if (user == null) throw new Exception("User does not exists");
-
-            return user;
         }
     }
 }

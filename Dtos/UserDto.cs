@@ -1,9 +1,7 @@
 namespace VehicleRental.API.Dtos
 {
     public record UserDto(
-        [Required] [StringLength(50)] string? Username,
-        [Required] [StringLength(50)] string? Email,
-        string? FullName
+        [Required] [StringLength(50)] string? Email
     );
 
     public record UserLoginDto(
@@ -13,8 +11,7 @@ namespace VehicleRental.API.Dtos
 
     public record UserProfileDto(
         Guid Id,
-        string Username,
         string Email,
-        string FullName
+        List<Reservation> Reservations
     );
 }

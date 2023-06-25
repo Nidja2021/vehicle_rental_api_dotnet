@@ -2,10 +2,8 @@
 namespace VehicleRental.API.Dtos
 {
     public record VehicleDto (
+        Guid Id,
         string? Brand,
-        string? Model,
-        int Year,
-        string? FuelType,
-        decimal RentalRate
+        string? Model
     );
 }

@@ -5,7 +5,7 @@ global using VehicleRental.API.Services.UserService;
 global using VehicleRental.API.Services.VehicleService;
 global using VehicleRental.API.Services.ReservationService;
 global using VehicleRental.API.Data;
-global using VehicleRental.API.Helpers;
+// global using VehicleRental.API.Helpers;
 global using Microsoft.EntityFrameworkCore;
 global using AutoMapper;
 global using System.Text.Json.Serialization;
@@ -16,6 +16,8 @@ global using System.Text;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Security.Claims;
 global using Microsoft.AspNetCore.Authorization;
+global using NodaTime;
+global using System.ComponentModel.DataAnnotations.Schema;
 
 var builder = WebApplication.CreateBuilder(args);
 

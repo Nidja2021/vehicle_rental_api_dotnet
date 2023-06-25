@@ -16,11 +16,8 @@ namespace VehicleRental.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Username = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
-                    FullName = table.Column<string>(type: "text", nullable: true),
-                    Role = table.Column<int>(type: "integer", nullable: false)
+                    Password = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,11 +30,7 @@ namespace VehicleRental.API.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Brand = table.Column<string>(type: "text", nullable: true),
-                    Model = table.Column<string>(type: "text", nullable: true),
-                    Year = table.Column<int>(type: "integer", nullable: false),
-                    FuelType = table.Column<string>(type: "text", nullable: true),
-                    RentalRate = table.Column<decimal>(type: "numeric", nullable: false),
-                    Availability = table.Column<bool>(type: "boolean", nullable: false)
+                    Model = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -49,13 +42,8 @@ namespace VehicleRental.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    VehicleId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    StartReservation = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    EndReservation = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Active = table.Column<bool>(type: "boolean", nullable: false)
+                    UserId = table.Column<Guid>(type: "uuid", nullable: true),
+                    VehicleId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,8 +52,7 @@ namespace VehicleRental.API.Migrations
                         name: "FK_Reservations_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Reservations_Vehicles_VehicleId",
                         column: x => x.VehicleId,
@@ -77,8 +64,7 @@ namespace VehicleRental.API.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Reservations_UserId",
                 table: "Reservations",
-                column: "UserId",
-                unique: true);
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reservations_VehicleId",

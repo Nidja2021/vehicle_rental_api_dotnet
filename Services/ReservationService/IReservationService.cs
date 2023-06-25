@@ -7,9 +7,10 @@ namespace VehicleRental.API.Services.ReservationService
 {
     public interface IReservationService
     {
-        Task<Reservation> AddReservation(string userId, Reservation reservationRequest);
-        Task<Reservation> GetReservation(Guid id, User user);
+        Task<List<ReservationDto>> GetReservations();
+        Task<ReservationDto> AddReservation(Guid userId, Reservation reservationRequest);
+        Task<ReservationDto> GetReservation(Guid id, Guid userId);
         Task<Reservation> UpdateReservation(Guid id, User user, Reservation reservationRequest);
-        Task DeleteReservation(Guid id, User user);
+        Task DeleteReservation(Guid id, Guid userId);
     }
 }

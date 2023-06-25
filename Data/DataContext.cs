@@ -17,9 +17,13 @@ namespace VehicleRental.API.Data
         // {
         //     modelBuilder.Entity<Reservation>()
         //         .HasOne(r => r.User)
-        //         .WithOne(u => u.Reservation)
-        //         .HasForeignKey<User>(u => u.Id)
+        //         .WithMany(u => u.Reservations)
+        //         .HasForeignKey(u => u.User)
         //         .IsRequired(false);
+
+        //     modelBuilder.Entity<Vehicle>()
+        //         .Property(v => v.Id)
+        //         .ValueGeneratedOnAdd();
 
         //     modelBuilder.Entity<Reservation>()
         //         .HasOne(r => r.Vehicle)
@@ -27,5 +31,10 @@ namespace VehicleRental.API.Data
         //         .HasForeignKey<Vehicle>(v => v.Id)
         //         .IsRequired(false);
         // }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

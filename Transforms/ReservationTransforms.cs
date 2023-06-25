@@ -13,15 +13,15 @@ namespace VehicleRental.API.Transforms
                 .ForMember(
                     dest => dest.Vehicle,
                     opt => opt.MapFrom(src => src.Vehicle)
-                )
-                .ForMember(
-                    dest => dest.StartReservation,
-                    opt => opt.MapFrom(src => src.StartReservation)
-                )
-                .ForMember(
-                    dest => dest.EndReservation,
-                    opt => opt.MapFrom(src => src.EndReservation)
                 );
+                // .ForMember(
+                //     dest => dest.StartReservation,
+                //     opt => opt.MapFrom(src => src.StartReservation)
+                // )
+                // .ForMember(
+                //     dest => dest.EndReservation,
+                //     opt => opt.MapFrom(src => src.EndReservation)
+                // );
         }
     }
 }

@@ -18,7 +18,9 @@ namespace VehicleRental.API.Services.UserService
 
         public async Task<UserProfileDto> GetUserById(Guid id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users
+                        .Include(u => u.Reservations)
+                        .FirstOrDefaultAsync(u => u.Id == id);
             if (user == null) throw new Exception("User does not exists");
 
             return _mapper.Map<UserProfileDto>(user);

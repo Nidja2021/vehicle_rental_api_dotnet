@@ -12,8 +12,8 @@ using VehicleRental.API.Data;
 namespace VehicleRental.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230622225602_Initial")]
-    partial class Initial
+    [Migration("20230625121221_Initial1")]
+    partial class Initial1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,22 +31,7 @@ namespace VehicleRental.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("Active")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("EndReservation")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("StartReservation")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("VehicleId")
@@ -54,8 +39,7 @@ namespace VehicleRental.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.HasIndex("VehicleId")
                         .IsUnique();
@@ -73,17 +57,7 @@ namespace VehicleRental.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("FullName")
-                        .HasColumnType("text");
-
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -98,23 +72,11 @@ namespace VehicleRental.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("Availability")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("Brand")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FuelType")
                         .HasColumnType("text");
 
                     b.Property<string>("Model")
                         .HasColumnType("text");
-
-                    b.Property<decimal>("RentalRate")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -124,10 +86,8 @@ namespace VehicleRental.API.Migrations
             modelBuilder.Entity("VehicleRental.API.Models.Reservation", b =>
                 {
                     b.HasOne("VehicleRental.API.Models.User", "User")
-                        .WithOne("Reservation")
-                        .HasForeignKey("VehicleRental.API.Models.Reservation", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Reservations")
+                        .HasForeignKey("UserId");
 
                     b.HasOne("VehicleRental.API.Models.Vehicle", "Vehicle")
                         .WithOne("Reservation")
@@ -142,7 +102,7 @@ namespace VehicleRental.API.Migrations
 
             modelBuilder.Entity("VehicleRental.API.Models.User", b =>
                 {
-                    b.Navigation("Reservation");
+                    b.Navigation("Reservations");
                 });
 
             modelBuilder.Entity("VehicleRental.API.Models.Vehicle", b =>

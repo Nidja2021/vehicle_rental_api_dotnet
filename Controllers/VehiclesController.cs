@@ -23,7 +23,7 @@ namespace VehicleRental.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> AddVehicle([FromBody] VehicleDto vehicleRequest) {
+        public async Task<ActionResult<Guid>> AddVehicle([FromBody] Vehicle vehicleRequest) {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

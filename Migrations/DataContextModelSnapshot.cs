@@ -28,22 +28,7 @@ namespace VehicleRental.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("Active")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("EndReservation")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("StartReservation")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("VehicleId")
@@ -69,17 +54,7 @@ namespace VehicleRental.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("FullName")
-                        .HasColumnType("text");
-
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -94,23 +69,11 @@ namespace VehicleRental.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("Availability")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("Brand")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FuelType")
                         .HasColumnType("text");
 
                     b.Property<string>("Model")
                         .HasColumnType("text");
-
-                    b.Property<decimal>("RentalRate")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -121,9 +84,7 @@ namespace VehicleRental.API.Migrations
                 {
                     b.HasOne("VehicleRental.API.Models.User", "User")
                         .WithMany("Reservations")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.HasOne("VehicleRental.API.Models.Vehicle", "Vehicle")
                         .WithOne("Reservation")

@@ -23,13 +23,15 @@ namespace VehicleRental.API.Services.VehicleService
             return vehiclesResponse;
         }
 
-        public async Task<Guid> AddVehicle(VehicleDto vehicleRequest)
+        public async Task<Guid> AddVehicle(Vehicle vehicleRequest)
         {
-            var vehicle = _mapper.Map<Vehicle>(vehicleRequest);
-            await _context.Vehicles.AddAsync(vehicle);
-            await _context.SaveChangesAsync();
+            var isVehicleExisted = await _context.Vehicles.FirstOrDefaultAsync(v => v.Id == vehicleRequest.Id);
+            if (isVehicleExisted != null) throw new Exception("Vehicle already exists");
 
-            return vehicle.Id;
+            await _context.Vehicles.AddAsync(vehicleRequest);
+            await _context.SaveChangesAsync();
+            System.Console.WriteLine($"VEHICLE ID: --------------- {vehicleRequest.Id}");
+            return vehicleRequest.Id;
         }
 
         public async Task<VehicleDto> GetVehicle(Guid id)
@@ -46,9 +48,9 @@ namespace VehicleRental.API.Services.VehicleService
             if (vehicle == null) throw new Exception("Vehicle does not exists.");
             vehicle.Brand = vehicleRequest.Brand;
             vehicle.Model = vehicleRequest.Model;
-            vehicle.Year = vehicleRequest.Year;
-            vehicle.FuelType = vehicleRequest.FuelType;
-            vehicle.RentalRate = vehicleRequest.RentalRate;
+            // vehicle.Year = vehicleRequest.Year;
+            // vehicle.FuelType = vehicleRequest.FuelType;
+            // vehicle.RentalRate = vehicleRequest.RentalRate;
 
             await _context.SaveChangesAsync();
 

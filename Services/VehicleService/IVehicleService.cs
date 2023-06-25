@@ -4,7 +4,7 @@ namespace VehicleRental.API.Services.VehicleService
     {
         Task<List<VehicleDto>> GetVehicles();
         Task<VehicleDto> GetVehicle(Guid id);
-        Task<Guid> AddVehicle(VehicleDto vehicleRequest);
+        Task<Guid> AddVehicle(Vehicle vehicleRequest);
         Task<VehicleDto> UpdateVehicle(Guid id, VehicleDto vehicleRequest);
         Task<string> DeleteVehicle(Guid id);
 

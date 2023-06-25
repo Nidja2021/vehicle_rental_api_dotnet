@@ -17,16 +17,20 @@ namespace VehicleRental.API.Services.AuthService
 
         public async Task<UserDto> Register(User userRegister)
         {
-            var isUserExists = await _context.Users.FirstOrDefaultAsync(user => user.Email == userRegister.Email || user.Username == userRegister.Username);
+            var isUserExists = await _context.Users.FirstOrDefaultAsync(user => user.Email == userRegister.Email);
             if (isUserExists != null) throw new Exception("User already exists");
 
-            userRegister.Password = BCrypt.Net.BCrypt.HashPassword(userRegister.Password);
+            var user = new User {
+                Email = userRegister.Email,
+                Password = BCrypt.Net.BCrypt.HashPassword(userRegister.Password),
+                Reservations = new List<Reservation>()
+            };
 
-            await _context.Users.AddAsync(userRegister);
+            await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
-            var userDto = _mapper.Map<UserDto>(userRegister);
-            return userDto;
+            // var userDto = _mapper.Map<UserDto>(userRegister);
+            return new UserDto(user.Email);
         }
 
         public async Task<TokenDto> Login(UserLoginDto userLogin)
@@ -46,7 +50,7 @@ namespace VehicleRental.API.Services.AuthService
         {
             var claims = new List<Claim> {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
+                // new Claim(ClaimTypes.Role, user.Role.ToString())
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
