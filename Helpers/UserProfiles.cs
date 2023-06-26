@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace VehicleRental.API.Transforms
+namespace VehicleRental.API.Helpers
 {
     public class UserTransforms : Profile
     {
