@@ -55,9 +55,28 @@ namespace VehicleRental.API.Services.VehicleService
         public async Task<string> DeleteVehicle(Guid id)
         {
             var vehicle = await isVehicleExisted(id);
-            if (vehicle == null) throw new ("Vehicle does not exists.");
+            if (vehicle == null) throw new VehicleNotFoundException();
             _context.Vehicles.Remove(vehicle);
             return "Vehicle has deleted successfully";
+        }
+
+        public async Task<List<VehicleDto>> GetProductsBySearch(string search, int page, int pageSize)
+        {
+            var query = _context.Vehicles.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(v => v.Model!.Contains(search));
+            }
+
+            var totalCount = await query.CountAsync();
+
+            query = query.Skip((page - 1) * pageSize).Take(pageSize);
+
+            var vehicles = await query
+                .Select(v => new VehicleDto(v.Id, v.Brand!, v.Model!)).ToListAsync();
+            
+            return vehicles;
         }
 
         private async Task<Vehicle?> isVehicleExisted(Guid id)

@@ -74,5 +74,12 @@ namespace VehicleRental.API.Controllers
                 return BadRequest(new { Message = e.Message });
             }
         }
+
+       [HttpGet]
+       public async Task<ActionResult<List<VehicleDto>>> GetVehiclesBySearch([FromQuery] string search, [FromQuery] int page = 1, [FromQuery] int pageSize = 10) 
+       {
+            return Ok(await _vehicleService.GetProductsBySearch(search, page, pageSize));
+       }
+
     }
 }
