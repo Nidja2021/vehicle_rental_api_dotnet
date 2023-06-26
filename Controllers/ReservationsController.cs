@@ -26,11 +26,11 @@ namespace VehicleRental.API.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = "User")]
         public async Task<ActionResult<ReservationDto>> AddReservation(Reservation reservationRequest)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) return Unauthorized();
+            if (userId == null) return Forbid();
  
             try
             {
@@ -45,15 +45,16 @@ namespace VehicleRental.API.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
-        public async Task<ActionResult<ReservationDto>> GetReserveration(Guid id)
+        [Authorize(Policy = "CompanyOrUser")]
+        public async Task<ActionResult<Reservation>> GetReserveration(Guid id)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) return Unauthorized();
+            if (userId == null) return Forbid();
 
             try
             {
                 var reservation = await _reservationService.GetReservation(id, Guid.Parse(userId));
+                if (reservation == null) return NotFound(new { Message = "Reservation does not exists" });
                 return Ok(reservation);
             }
             catch (Exception e)
@@ -63,11 +64,29 @@ namespace VehicleRental.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Policy = "CompanyOrUser")]
+        public async Task<ActionResult<Reservation>> UpdateReservation(Guid id, Reservation reservationRequest)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) return Forbid();
+
+            try
+            {
+                await _reservationService.UpdateReservation(id, Guid.Parse(userId), reservationRequest);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { Message = e.Message });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Policy = "CompanyOrUser")]
         public async Task<ActionResult<Reservation>> DeleteReserveration(Guid id)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) return Unauthorized();
+            if (userId == null) return Forbid();
 
             try
             {

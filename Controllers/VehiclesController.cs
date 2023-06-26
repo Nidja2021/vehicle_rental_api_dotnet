@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace VehicleRental.API.Controllers
@@ -22,14 +18,30 @@ namespace VehicleRental.API.Controllers
             return Ok(await _vehicleService.GetVehicles());
         }
 
+
+        [Authorize(Policy = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<Guid>> AddVehicle([FromBody] Vehicle vehicleRequest) {
-            if (!ModelState.IsValid)
+        public async Task<ActionResult<Vehicle>> AddVehicle([FromBody] Vehicle vehicleRequest)
+        {
+            var companyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (companyId == null) return Forbid();
+
+            try
             {
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                return StatusCode(201, await _vehicleService.AddVehicle(Guid.Parse(companyId), vehicleRequest));
             }
-            var vehicleId = await _vehicleService.AddVehicle(vehicleRequest);
-            return StatusCode(201, vehicleId);
+            catch (VehicleExistsException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { Message = e.Message });
+            }
         }
 
         [HttpGet("{id}")]
@@ -41,6 +53,7 @@ namespace VehicleRental.API.Controllers
         }
 
         [HttpPatch("{id}")]
+        [Authorize(Policy = "Admin")]
         public async Task<ActionResult<VehicleDto>> UpdateVehicle(Guid id, [FromBody] VehicleDto vehicleRequest) {
             var vehicle = await _vehicleService.GetVehicle(id);
             if (vehicle == null) return NotFound(new { Message = "Vehicle does not exists" });
@@ -50,6 +63,7 @@ namespace VehicleRental.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "Admin")]
         public async Task<ActionResult<string>> DeleteVehicle(Guid id) {
             try
             {

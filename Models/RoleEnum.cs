@@ -1,6 +1,6 @@
 namespace VehicleRental.API.Models
 {
-    public enum RoleEnum
+    public enum Role
     {
         ADMIN,
         USER

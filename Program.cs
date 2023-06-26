@@ -1,11 +1,12 @@
 global using VehicleRental.API.Dtos;
 global using VehicleRental.API.Models;
-global using VehicleRental.API.Services.AuthService;
 global using VehicleRental.API.Services.UserService;
 global using VehicleRental.API.Services.VehicleService;
 global using VehicleRental.API.Services.ReservationService;
+global using VehicleRental.API.Services.AuthService;
 global using VehicleRental.API.Data;
-// global using VehicleRental.API.Helpers;
+global using VehicleRental.API.Exceptions;
+global using VehicleRental.API.Helpers;
 global using Microsoft.EntityFrameworkCore;
 global using AutoMapper;
 global using System.Text.Json.Serialization;
@@ -39,11 +40,11 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
+}).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
+        RoleClaimType = ClaimTypes.Role,
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateIssuerSigningKey = true,
@@ -51,6 +52,11 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration.GetSection("JWT:ValidAudience").Value!,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JWT:SecretKey").Value!))
     };
+}).Services.AddAuthorization(options => 
+{
+    options.AddPolicy("Admin", policy => policy.RequireRole(Role.ADMIN.ToString()));
+    options.AddPolicy("User", policy => policy.RequireRole(Role.USER.ToString()));
+    options.AddPolicy("AdminOrUser", policy => policy.RequireRole(Role.USER.ToString()));
 });
 
 builder.Services.AddControllers();

@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace VehicleRental.API.Services.UserService
 {
     public class UserService : IUserService
@@ -21,7 +16,7 @@ namespace VehicleRental.API.Services.UserService
             var user = await _context.Users
                         .Include(u => u.Reservations)
                         .FirstOrDefaultAsync(u => u.Id == id);
-            if (user == null) throw new Exception("User does not exists");
+            if (user == null) throw new UserNotFoundException();
 
             return _mapper.Map<UserProfileDto>(user);
         }
@@ -29,7 +24,7 @@ namespace VehicleRental.API.Services.UserService
         public async Task UpdateUserById(Guid id, UserProfileDto userUpdate)
         {
             var user = await _context.Users.FindAsync(id);
-            if (user == null) throw new Exception("User does not exists");
+            if (user == null) throw new UserNotFoundException();
 
             _mapper.Map(userUpdate, user);
         }

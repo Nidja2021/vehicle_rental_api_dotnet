@@ -12,7 +12,7 @@ using VehicleRental.API.Data;
 namespace VehicleRental.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230625121221_Initial1")]
+    [Migration("20230626112949_Initial1")]
     partial class Initial1
     {
         /// <inheritdoc />
@@ -30,6 +30,18 @@ namespace VehicleRental.API.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("EndReservation")
+                        .HasColumnType("text");
+
+                    b.Property<string>("StartReservation")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uuid");
@@ -53,6 +65,9 @@ namespace VehicleRental.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
@@ -60,6 +75,12 @@ namespace VehicleRental.API.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -72,10 +93,25 @@ namespace VehicleRental.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("Availability")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Brand")
                         .HasColumnType("text");
 
+                    b.Property<string>("Color")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Model")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Year")
                         .HasColumnType("text");
 
                     b.HasKey("Id");

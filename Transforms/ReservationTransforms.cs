@@ -9,19 +9,7 @@ namespace VehicleRental.API.Transforms
     {
         public ReservationProfile()
         {
-            CreateMap<Reservation, ReservationDto>()
-                .ForMember(
-                    dest => dest.Vehicle,
-                    opt => opt.MapFrom(src => src.Vehicle)
-                );
-                // .ForMember(
-                //     dest => dest.StartReservation,
-                //     opt => opt.MapFrom(src => src.StartReservation)
-                // )
-                // .ForMember(
-                //     dest => dest.EndReservation,
-                //     opt => opt.MapFrom(src => src.EndReservation)
-                // );
+            CreateMap<Reservation, ReservationDto>();
         }
     }
 }

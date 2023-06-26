@@ -17,8 +17,34 @@ namespace VehicleRental.API.Controllers
             _authService = authService;
         }
 
+        [HttpPost("admin/register")]
+        public async Task<ActionResult<UserDto>> AdminRegister(User userRegister)
+        {
+            try
+            {
+                return StatusCode(201, await _authService.Register(userRegister, "Admin"));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { Message = e.Message });
+            }
+        }
+
+        [HttpPost("admin/login")]
+        public async Task<ActionResult<UserDto>> AdminLogin(UserLoginDto userLogin)
+        {
+            try
+            {
+                return StatusCode(201, await _authService.Login(userLogin));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { Message = e.Message });
+            }
+        }
+
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register(User userRegister)
+        public async Task<ActionResult<UserDto>> UserRegister(User userRegister)
         {
             try
             {
@@ -31,7 +57,7 @@ namespace VehicleRental.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> Login(UserLoginDto userLogin)
+        public async Task<ActionResult<UserDto>> UserLogin(UserLoginDto userLogin)
         {
             try
             {

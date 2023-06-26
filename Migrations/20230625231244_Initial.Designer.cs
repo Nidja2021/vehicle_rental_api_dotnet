@@ -12,7 +12,7 @@ using VehicleRental.API.Data;
 namespace VehicleRental.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230625120858_Initial")]
+    [Migration("20230625231244_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,11 +25,61 @@ namespace VehicleRental.API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("VehicleRental.API.Models.Company", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Companies");
+                });
+
             modelBuilder.Entity("VehicleRental.API.Models.Reservation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("EndReservation")
+                        .HasColumnType("text");
+
+                    b.Property<string>("StartReservation")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uuid");
@@ -38,6 +88,8 @@ namespace VehicleRental.API.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("UserId");
 
@@ -53,6 +105,9 @@ namespace VehicleRental.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
@@ -60,6 +115,12 @@ namespace VehicleRental.API.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -72,19 +133,43 @@ namespace VehicleRental.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("Availability")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Brand")
                         .HasColumnType("text");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Model")
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Year")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("Vehicles");
                 });
 
             modelBuilder.Entity("VehicleRental.API.Models.Reservation", b =>
                 {
+                    b.HasOne("VehicleRental.API.Models.Company", "Company")
+                        .WithMany("Reservations")
+                        .HasForeignKey("CompanyId");
+
                     b.HasOne("VehicleRental.API.Models.User", "User")
                         .WithMany("Reservations")
                         .HasForeignKey("UserId");
@@ -95,9 +180,27 @@ namespace VehicleRental.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Company");
+
                     b.Navigation("User");
 
                     b.Navigation("Vehicle");
+                });
+
+            modelBuilder.Entity("VehicleRental.API.Models.Vehicle", b =>
+                {
+                    b.HasOne("VehicleRental.API.Models.Company", "Company")
+                        .WithMany("Vehicles")
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("VehicleRental.API.Models.Company", b =>
+                {
+                    b.Navigation("Reservations");
+
+                    b.Navigation("Vehicles");
                 });
 
             modelBuilder.Entity("VehicleRental.API.Models.User", b =>

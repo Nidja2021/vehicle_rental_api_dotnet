@@ -1,16 +1,15 @@
 namespace VehicleRental.API.Models
 {
     [Serializable]
-    public class Reservation
+    public class Reservation : BaseEntity
     {
-        public Guid Id { get; set; }
-
-        [JsonIgnore]
-        public User? User { get; set; }
-        // public Guid UserId { get; set; }
-
-        [JsonIgnore]
-        public Vehicle? Vehicle { get; set; }
+        
         public Guid VehicleId { get; set; }
+        public string? StartReservation { get; set; }
+        public string? EndReservation { get; set; }
+
+        
+        [JsonIgnore] public User? User { get; set; }
+        [JsonIgnore] public Vehicle? Vehicle { get; set; }
     }
 }

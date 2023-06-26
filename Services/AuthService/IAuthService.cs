@@ -7,7 +7,7 @@ namespace VehicleRental.API.Services.AuthService
 {
     public interface IAuthService
     {
-        Task<UserDto> Register(User userRegister);
+        Task<UserDto> Register(User userRegister, string role = "User");
         Task<TokenDto> Login(UserLoginDto userLogin);
     }
 }

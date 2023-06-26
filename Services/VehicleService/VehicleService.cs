@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace VehicleRental.API.Services.VehicleService
 {
     public class VehicleService : IVehicleService
@@ -23,21 +18,21 @@ namespace VehicleRental.API.Services.VehicleService
             return vehiclesResponse;
         }
 
-        public async Task<Guid> AddVehicle(Vehicle vehicleRequest)
+        public async Task<Vehicle> AddVehicle(Guid companyId, Vehicle vehicleRequest)
         {
-            var isVehicleExisted = await _context.Vehicles.FirstOrDefaultAsync(v => v.Id == vehicleRequest.Id);
-            if (isVehicleExisted != null) throw new Exception("Vehicle already exists");
+            var isVehicleExisted = await _context.Vehicles.AnyAsync(v => v.Id == vehicleRequest.Id);
+            if (isVehicleExisted) throw new VehicleExistsException();
 
             await _context.Vehicles.AddAsync(vehicleRequest);
             await _context.SaveChangesAsync();
-            System.Console.WriteLine($"VEHICLE ID: --------------- {vehicleRequest.Id}");
-            return vehicleRequest.Id;
+
+            return vehicleRequest;
         }
 
         public async Task<VehicleDto> GetVehicle(Guid id)
         {
             var vehicle = await isVehicleExisted(id);
-            if (vehicle == null) throw new Exception("Vehicle does not exists.");
+            if (vehicle == null) throw new VehicleNotFoundException();
             var vehicleDto = _mapper.Map<VehicleDto>(vehicle);
             return vehicleDto;
         }
@@ -45,7 +40,7 @@ namespace VehicleRental.API.Services.VehicleService
         public async Task<VehicleDto> UpdateVehicle(Guid id, VehicleDto vehicleRequest)
         {
             var vehicle = await isVehicleExisted(id);
-            if (vehicle == null) throw new Exception("Vehicle does not exists.");
+            if (vehicle == null) throw new VehicleNotFoundException();
             vehicle.Brand = vehicleRequest.Brand;
             vehicle.Model = vehicleRequest.Model;
             // vehicle.Year = vehicleRequest.Year;
@@ -60,14 +55,14 @@ namespace VehicleRental.API.Services.VehicleService
         public async Task<string> DeleteVehicle(Guid id)
         {
             var vehicle = await isVehicleExisted(id);
-            if (vehicle == null) throw new Exception("Vehicle does not exists.");
+            if (vehicle == null) throw new ("Vehicle does not exists.");
             _context.Vehicles.Remove(vehicle);
             return "Vehicle has deleted successfully";
         }
 
         private async Task<Vehicle?> isVehicleExisted(Guid id)
         {
-            var vehicle = await _context.Vehicles.FindAsync(id);
+            var vehicle = await _context.Vehicles.FirstOrDefaultAsync(v => v.Id == id);
             if (vehicle != null) return vehicle;
             return null;
         }

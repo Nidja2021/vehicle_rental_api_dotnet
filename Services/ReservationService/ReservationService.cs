@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
-
 namespace VehicleRental.API.Services.ReservationService
 {
     
@@ -33,7 +27,7 @@ namespace VehicleRental.API.Services.ReservationService
         public async Task<ReservationDto> AddReservation(Guid userId, Reservation reservationRequest)
         {
             var reservation = await _context.Reservations.FirstOrDefaultAsync(r => r.VehicleId == reservationRequest.VehicleId);
-            if (reservation != null) throw new Exception("Reservation already exists");
+            if (reservation != null) throw new ReservationExistsException();
 
             reservation = new Reservation
             {
@@ -42,17 +36,15 @@ namespace VehicleRental.API.Services.ReservationService
             
             var user = await _context.Users.FindAsync(userId);
             
-            if (user == null) throw new Exception("User does not exists");
+            if (user == null) throw new UserNotFoundException();
 
             var vehicle = await _context.Vehicles.FindAsync(reservationRequest.VehicleId);
-            if (vehicle == null) throw new Exception("Vehicle does not exists");
+            if (vehicle == null) throw new VehicleNotFoundException();
 
             reservation.User = user;
             reservation.Vehicle = vehicle;
             
             await _context.Reservations.AddAsync(reservation);
-            // user?.Reservations?.Add(reservation);
-            // await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
             return new ReservationDto(reservation.Id, reservation.User!, reservation.Vehicle!);
@@ -60,23 +52,28 @@ namespace VehicleRental.API.Services.ReservationService
 
         
 
-        public async Task<ReservationDto> GetReservation(Guid id, Guid userId)
+        public async Task<Reservation> GetReservation(Guid id, Guid userId)
         {
             var reservation = await _context.Reservations
                                 .Include(r => r.User)
                                     .ThenInclude(u => u.Reservations)
                                 .Include(r => r.Vehicle)
                                 .FirstOrDefaultAsync(r => r.Id == id);
-                                
 
-            return new ReservationDto(reservation.Id, reservation.User!, reservation.Vehicle!);
+            if (reservation == null) throw new ReservationNotFoundException();
+                                
+            return reservation!;
         }
 
-        public async Task<Reservation> UpdateReservation(Guid id, User user, Reservation reservationRequest)
+        public async Task<Reservation> UpdateReservation(Guid id, Guid userId, Reservation reservationRequest)
         {
-            var reservation = await CheckReservation(id);
+            var reservation = await _context.Reservations.FirstOrDefaultAsync(r => r.Id == id);
+            if (reservation == null) throw new ReservationNotFoundException();
 
-            ValidateUserReservation(user, reservation);
+            reservation.StartReservation = reservationRequest.StartReservation;
+            reservation.EndReservation = reservationRequest.EndReservation;
+
+            await _context.SaveChangesAsync();
 
             return reservation;
         }
@@ -84,24 +81,10 @@ namespace VehicleRental.API.Services.ReservationService
         public async Task DeleteReservation(Guid id, Guid userId)
         {
             var reservation = await _context.Reservations.FindAsync(id);
-            // var reservation = await _context.Reservations.Where(r => r.UserId == userId).FirstOrDefaultAsync(r => r.Id == id);
+            if (reservation == null) throw new ReservationNotFoundException();
 
-            _context.Reservations.Remove(reservation);
+            _context.Reservations.Remove(reservation!);
             await _context.SaveChangesAsync();
-        }
-
-        private async Task<Reservation> CheckReservation(Guid id)
-        {
-            var reservation = await _context.Reservations.FindAsync(id);
-            if (reservation == null) throw new Exception("Reservation does not exists.");
-            return reservation;
-        }
-
-        private void ValidateUserReservation(User user, Reservation reservation)
-        {
-            // if (user.Id != reservation?.User?.Id) 
-            //     throw new Exception("You are not authorize for this action");
-            return;
         }
     }
 }

@@ -1,7 +1,5 @@
 namespace VehicleRental.API.Services.AuthService
 {
-    
-
     public class AuthService : IAuthService
     {
         private readonly DataContext _context;
@@ -15,62 +13,38 @@ namespace VehicleRental.API.Services.AuthService
             _configuration = configuration;
         }
 
-        public async Task<UserDto> Register(User userRegister)
+        public async Task<UserDto> Register(User userRegister, string role)
         {
-            var isUserExists = await _context.Users.FirstOrDefaultAsync(user => user.Email == userRegister.Email);
-            if (isUserExists != null) throw new Exception("User already exists");
+            bool isUserExists = await _context.Users.AnyAsync(c => c.Email == userRegister.Email);
+            if (isUserExists) throw new UserExistsException();
 
-            var user = new User {
-                Email = userRegister.Email,
-                Password = BCrypt.Net.BCrypt.HashPassword(userRegister.Password),
-                Reservations = new List<Reservation>()
-            };
+            userRegister.Email = userRegister.Email;
+            userRegister.Password = BCrypt.Net.BCrypt.HashPassword(userRegister.Password);
+            userRegister.Reservations = new List<Reservation>();
 
-            await _context.Users.AddAsync(user);
+            if (role == "Admin")
+            {
+                userRegister.Role = Role.ADMIN;
+            }
+
+            await _context.Users.AddAsync(userRegister);
             await _context.SaveChangesAsync();
 
-            // var userDto = _mapper.Map<UserDto>(userRegister);
-            return new UserDto(user.Email);
+            return new UserDto(userRegister.Email);
         }
 
         public async Task<TokenDto> Login(UserLoginDto userLogin)
         {
-            var isUserExists = await _context.Users.FirstOrDefaultAsync(user => user.Email == userLogin.Email);
-            if (isUserExists == null) throw new Exception("User does not exists");
+            var user = await AuthClass.GetEntityByEmailAsync<User>(_context, userLogin.Email!);
+            if (user == null) throw new UserNotFoundException();
             
-            var checkPassword = BCrypt.Net.BCrypt.Verify(userLogin.Password, isUserExists.Password);
-            if (!checkPassword) throw new Exception("Invalid credentials");
+            var checkPassword = BCrypt.Net.BCrypt.Verify(userLogin.Password, user.Password);
+            if (!checkPassword) throw new InvalidCredentialsException();
 
-            var token = GenerateToken(isUserExists);
+            var token = AuthClass.GenerateToken<User>(user, _configuration);
             var tokenDto = new TokenDto(token);
             return tokenDto;
         }
 
-        private string GenerateToken(User user)
-        {
-            var claims = new List<Claim> {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                // new Claim(ClaimTypes.Role, user.Role.ToString())
-            };
-
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration.GetSection("Jwt:SecretKey").Value!
-            ));
-
-            var signingCredentials = new SigningCredentials(
-                securityKey,
-                SecurityAlgorithms.HmacSha256Signature
-            );
-
-            var securityToken = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddDays(1),
-                issuer: _configuration.GetSection("JWT:ValidIssuer").Value!,
-                audience: _configuration.GetSection("JWT:ValidAudience").Value!,
-                signingCredentials: signingCredentials
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(securityToken);
-        }
     }
 }
