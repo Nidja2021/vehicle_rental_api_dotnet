@@ -22,7 +22,7 @@ This project is a Vehicle Rental API built using .NET 7, ASP.NET Core WebAPI, En
 
 - Database Persistence: The API utilizes Entity Framework along with a PostgreSQL database for persistent data storage. This ensures reliable data management and allows for efficient querying and manipulation of vehicle listings, reservations, and user information.
 
-- Containerization with Docker: The project is containerized using Docker, which provides a consistent and portable environment for running the API. Docker allows for easy deployment and scalability across different platforms and environments.
+- Containerization with Docker: The project is containerized using Docker, which provides a consistent and portable environment for running the databse.
 
 - Data Mapping with AutoMapper: AutoMapper is employed to simplify and automate the mapping of data models to DTOs (Data Transfer Objects) and vice versa. This helps in reducing manual mapping efforts and improves development productivity.
 
