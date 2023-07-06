@@ -91,7 +91,7 @@ This project is a Vehicle Rental API built using .NET 7, ASP.NET Core WebAPI, En
 ```
 *Create a new reservation by logged user - **Bearer token for user (Required)**.
 ```http
-  POST /api/reservations            
+  POST /api/reservations
 ```
 
 *Get a reservation by ID of reservation and logged user - **Bearer token for user (Required)**.
@@ -109,7 +109,7 @@ This project is a Vehicle Rental API built using .NET 7, ASP.NET Core WebAPI, En
 
 *Delete a reservation by ID of reservation and logged user - **Bearer token for user (Required)**.
 ```http
-  DELETE /api/reservations/{id}     
+  DELETE /api/reservations/{id}
 ```
 
 | Parameter | Type     | Description                |
